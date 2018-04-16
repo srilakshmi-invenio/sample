@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:connectlogger="http://www.mulesoft.org/schema/mule/connectlogger"
+	xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:enterpriselogger="http://www.mulesoft.org/schema/mule/enterpriselogger"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/connectlogger http://www.mulesoft.org/schema/mule/connectlogger/current/mule-connectlogger.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/enterpriselogger http://www.mulesoft.org/schema/mule/enterpriselogger/current/mule-enterpriselogger.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
+
+	
+	<choice-exception-strategy name="globalChoiceExceptionStrategy">
+	
+		<catch-exception-strategy doc:name="filterUnAcceptedExceptionStrategy" when="#[exception.causedBy(org.mule.api.routing.filter.FilterUnacceptedException)]">
+
+            <flow-ref name="subHandleFilterUnAcceptedflow" doc:name="flowRef-subHandleFiltetUnAcceptedflow" doc:description="invoke filter unaccepted flow"/>
+		</catch-exception-strategy>
+		
+		<catch-exception-strategy when="#[exception.causedBy(com.redn.connect.exception.ConnectException)]" doc:name="connectExceptionCatchExceptionStrategy">
+
+            <flow-ref name="subHandleConnectExceptionflow" doc:name="flowRef-subHandleConnectExceptionflow"/>
+			
+		</catch-exception-strategy>
+		
+        <catch-exception-strategy doc:name="connectActiveMqexceptionStrategy" when="#[exception.causedBy(javax.jms.JMSException)]">
+            <flow-ref name="connectActiveMqexceptionStrategy" doc:name="connectActiveMqexceptionStrategy"/>
+        </catch-exception-strategy>
+        <catch-exception-strategy  doc:name="anyOtherExceptionCatchExceptionStrategy">
+
+            <flow-ref name="subHandleOtherExceptionflow" doc:name="flowRef-subHandleOtherExceptionflow"/>
+		</catch-exception-strategy>
+	</choice-exception-strategy>
+	
+    <sub-flow name="subPrepareEEandSendToCEHflow" >
+        <logger message="ErrorCode: #[flowVars[ConnectConstants.VAR_ERROR_CODE]], ErrorMessage: #[flowVars[ConnectConstants.VAR_ERROR_DESCRIPTION]], Error Category: #[flowVars[ConnectConstants.VAR_ERROR_CATEGORY]], ErrorOrigin: #[flowVars[ConnectConstants.VAR_ERROR_ORIGIN]]" level="INFO" doc:name="Logger"/>
+        <connectlogger:error config-ref="Connectlogger__Configuration" logMessage=" ErrorMessage of i3klen001 : #[flowVars[ConnectConstants.VAR_ERROR_DESCRIPTION]]" processState="ErrorCode: #[flowVars[ConnectConstants.VAR_ERROR_CODE]]" doc:name="Connectlogger"/>
+		<custom-transformer
+			class="com.redn.connect.transformer.CreateXMLEnterpriseExceptionTransformer"
+			doc:name="create-enterprise-exception"
+			doc:description="create enterprise message with the error details to be sent to CEH" />
+		<jms:outbound-endpoint queue="${connect.i3klen001.exception.queue.name}" 
+			doc:name="Send Exception to CEH" 
+			doc:description="Route Enterprise Exception Message to Global Exception Handler queue."
+			 connector-ref="activeMQGlblConn"/>
+			 <connectlogger:error config-ref="Connectlogger__Configuration" logMessage="Sent i3klen001 error msg to CEH topic" processState="400101130" doc:name="Connectlogger"/>
+	</sub-flow>
+    <sub-flow name="subHandleFilterUnAcceptedflow" >
+
+        <expression-component doc:name="set exception properties" doc:description="sets the error description"><![CDATA[flowVars[ConnectConstants.VAR_ERROR_CODE]=IConstants.ERROR_CODE_FILTER_UNACCEPTED;
+flowVars[ConnectConstants.VAR_ERROR_DESCRIPTION]=ConnectConstants.CONST_MESSAGE_ENTERPRISE_MESSAGE_VALIDATION_FAILED;
+flowVars[ConnectConstants.VAR_ERROR_CATEGORY]=Category.TECH;
+flowVars[ConnectConstants.VAR_ERROR_ORIGIN]=ConnectConstants.CONST_EXCEPTION_ORIGIN_MULE_ESB_NS;]]></expression-component>
+
+        <flow-ref name="subPrepareEEandSendToCEHflow" doc:name="subPrepareEEandSendToCEHflow" doc:description="invoke handle error flow"/>
+    </sub-flow>
+    
+    <sub-flow name="subHandleConnectExceptionflow" >
+        <expression-component doc:name="set exception properties"><![CDATA[flowVars[ConnectConstants.VAR_ERROR_CODE]=exception.getCauseException().getCode();
+flowVars[ConnectConstants.VAR_ERROR_DESCRIPTION]=exception.getCauseException().getMessage();
+flowVars[ConnectConstants.VAR_ERROR_CATEGORY]=exception.getCauseException().getCategory();
+flowVars[ConnectConstants.VAR_ERROR_ORIGIN]=exception.getCauseException().getOrigin();]]></expression-component>
+
+        <flow-ref name="subPrepareEEandSendToCEHflow" doc:name="subPrepareEEandSendToCEHflow"/>
+    </sub-flow>
+    <sub-flow name="connectActiveMqexceptionStrategy">
+        <expression-component doc:name="set exception properties"><![CDATA[flowVars[ConnectConstants.VAR_ERROR_CODE]=IConstants.ERROR_ACTIVEMQ;
+flowVars[ConnectConstants.VAR_ERROR_DESCRIPTION]=exception.getCauseException().getMessage();
+flowVars[ConnectConstants.VAR_ERROR_CATEGORY]=Category.TECH;
+flowVars[ConnectConstants.VAR_ERROR_ORIGIN]=ConnectConstants.CONST_EXCEPTION_ORIGIN_MULE_ESB_NS;]]></expression-component>
+        <flow-ref name="subPrepareEEandSendToCEHflow" doc:name="subPrepareEEandSendToCEHflow"/>
+    </sub-flow>
+
+    
+    <sub-flow name="subHandleOtherExceptionflow" >
+        <expression-component doc:name="set exception properties"><![CDATA[flowVars[ConnectConstants.VAR_ERROR_CODE]=IConstants.ERROR_HANDLEOTHERCODE;
+flowVars[ConnectConstants.VAR_ERROR_DESCRIPTION]=exception.getCauseException().getMessage();
+flowVars[ConnectConstants.VAR_ERROR_CATEGORY]=Category.TECH;
+flowVars[ConnectConstants.VAR_ERROR_ORIGIN]=ConnectConstants.CONST_EXCEPTION_ORIGIN_MULE_ESB_NS;]]></expression-component>
+
+        <flow-ref name="subPrepareEEandSendToCEHflow" doc:name="subPrepareEEandSendToCEHflow"/>
+    </sub-flow>
+
+</mule>

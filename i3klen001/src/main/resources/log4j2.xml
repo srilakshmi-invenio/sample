@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+       <Appenders>
+              <Console name="Console" target="SYSTEM_OUT">
+                     <PatternLayout
+                           pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+              </Console>
+              <JDBC name="databaseAppender" tableName="CONNECT_LOGS">
+                     <ConnectionFactory class="com.redn.connect.connectlogger.ConnectionFactory"
+                           method="getDatabaseConnection" />
+                     <Column name="LOG_TIMESTAMP" pattern="[%d{yyyy-MM-dd HH\:mm\:ss.SSSZ}] " />
+                     <Column name="LOG_LEVEL" pattern="%-5p" />
+                     <Column name="NODE_NAME" pattern="%X{NODE_NAME}" />
+                     <Column name="SERVICE_NAME" pattern="%X{SERVICE_NAME}" />
+                     <Column name="THREAD_ID" pattern="[%t]" />
+                     <Column name="MESSAGE_ID" pattern="%X{MESSAGE_ID}" />
+                     <Column name="LOG_ELAPSED_TIME" pattern="%r" />
+                     <Column name="MESSAGE_SOURCE" pattern="%X{SOURCE}" />
+                     <Column name="MESSAGE_ACTION" pattern="%X{ACTION}" />
+                     <Column name="LOG_CATEGORY" pattern="%c" />
+                     <Column name="LOGGER_NAME" pattern="%X{LOGGER_NAME}" />
+                     <Column name="LOG_CODE" pattern="%X{PROCESS_STATE}" />
+                     <Column name="LOG_MESSAGE" pattern="%m" />
+                     <Column name="ERROR_DETAILS" pattern="%X{ERROR_MESSAGE}" />
+                     <Column name="SRC_UID" pattern="%X{SOURCE_ID}" />
+              </JDBC>
+              <RollingFile name="fileAppender"
+                                         fileName="${sys:mule.home}${sys:file.separator}logs${sys:file.separator}i3klen001.log"
+                                         filePattern="${sys:mule.home}${sys:file.separator}logs${sys:file.separator}i3klen001.log.%i">
+                                         <PatternLayout pattern="%d [%t] %-5p %c - %m%n" />
+                                         <SizeBasedTriggeringPolicy size="10 MB" />
+                                         <DefaultRolloverStrategy max="10" />
+              </RollingFile>
+              
+       </Appenders>
+      <Loggers>
+              <AsyncLogger name="org.mule" level="INFO">
+                     <AppenderRef ref="fileAppender" />
+              </AsyncLogger>
+              <AsyncLogger name="com.mulesoft" level="INFO">
+                     <AppenderRef ref="fileAppender" />
+              </AsyncLogger>
+              <AsyncLogger name="org.apache.cxf" level="WARN">
+                     <AppenderRef ref="fileAppender" />
+              </AsyncLogger>
+              <AsyncLogger name="org.apache" level="WARN">
+                     <AppenderRef ref="fileAppender" />
+              </AsyncLogger>
+              <AsyncLogger name="org.springframework.beans.factory"
+                     level="WARN">
+                     <AppenderRef ref="fileAppender" />
+              </AsyncLogger>
+
+              <AsyncLogger name="com.redn.connect" level="info">
+                     <AppenderRef ref="databaseAppender" />
+                     <AppenderRef ref="fileAppender" />
+              </AsyncLogger>
+
+              <AsyncRoot level="info">
+                     <AppenderRef ref="Console" />
+              </AsyncRoot>
+       </Loggers>
+
+</Configuration>

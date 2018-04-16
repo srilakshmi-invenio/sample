@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd">
+    <http:listener-config name="HTTP_Listener_Configuration" host="localhost" port="8083" doc:name="HTTP Listener Configuration"/>
+    <flow name="sendenterprisemsgFlow">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/IdocTest" doc:name="HTTP"/>
+          <set-payload value="UNA:+.? '
+UNB+UNOC:3+IBMEDIID:ZZ+662424795TEST:16+160330:1416+IG-62779496'
+UNH+80534414+ORDERS:D:97A:UN'
+BGM+231+20160330+4'
+DTM+69:20150501150000UTC?+12:304'
+FTX+SSR+++dd:Blank'
+FTX+AAR++ST'
+FTX+COI+++CLW'
+FTX+PRI++8'
+FTX+DEL++06'
+FTX+CUR+++Pack all item into one box'
+FTX+DIN+++make a call to customer before delivery'
+FTX+PRD+++1:1:PC01'
+RFF+PC:20AMS67000'
+RFF+SE:PC01K33E'
+RFF+SZ:ND'
+RFF+ABO:Y'
+RFF+CO:IBM1234501'
+DTM+4:20150501010101UTC?+12:304'
+RFF+ACW:CASE_12345'
+RFF+ADG:Y'
+RFF+ACH:Y'
+RFF+ZOD:order_desk01'
+RFF+ZSD:IBM'
+RFF+ZPD:30006672'
+RFF+ZCS:Blank'
+RFF+ZZZ'
+NAD+SE+30001234++IBM'
+NAD+BY+US00000001++Coca Cola:CA+9/F:841 WEBSTER ST:stress 3:Blank+SAN FRANCISCO++94117+US'
+CTA+PD+:Jordan Surzyn'
+COM+Minako@DHL.com:EM'
+COM+6508624654:TE'
+NAD+OY+US00000001++IBM Field Service:CA+9/F:900 WEBSTER ST:stress 3:Blank+SAN FRANCISCO++94117+US'
+CTA+CR+:Will Smith'
+COM+Will@ibm.com:EM'
+COM+6508624654:TE'
+LIN+10'
+PIA+5+04X6076'
+IMD+F++:::KEYBOARD NetVista Keyboard (USB)'
+QTY+21:1:EA'
+DTM+69:20160610120000UTC?+12:304'
+FTX+OSI+++INW'
+FTX+LIN+++ZSP1'
+FTX+ZCT+++STO from DC to FSL'
+RFF+ZSB:01'
+RFF+ZRO:Y'
+RFF+ZOR:KEYBOARD in good condition'
+RFF+ZST:SOFT'
+UNS+S'
+UNT+48+80534414'
+UNZ+1+IG-62779496'" doc:name="Set Payload" mimeType="text/plain"/>
+
+        <component class="test.PrepareTest" doc:name="Java"/>
+         <set-property propertyName="service_name" value="i3klen001" doc:name="Property"/>
+        <jms:outbound-endpoint queue="${connect.i3klen001.jms.virtual.topic.consumer}" connector-ref="activeMQGlblConn" doc:name="JMS"/>
+
+        <set-payload value="#['Sended Edifact file successfully']" doc:name="Set Payload"/>
+    </flow>
+</mule>

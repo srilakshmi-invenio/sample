@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:connectlogger="http://www.mulesoft.org/schema/mule/connectlogger" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:edifact-edi="http://www.mulesoft.org/schema/mule/edifact-edi" xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:metadata="http://www.mulesoft.org/schema/mule/metadata" xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-current.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+http://www.mulesoft.org/schema/mule/edifact-edi http://www.mulesoft.org/schema/mule/edifact-edi/current/mule-edifact-edi.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/connectlogger http://www.mulesoft.org/schema/mule/connectlogger/current/mule-connectlogger.xsd">
+    <expression-filter expression="#[payload instanceof com.redn.connect.vo.ConnectEnterpriseMessage]" name="ValidateEnterpriseMessage" doc:name="Expression"/>
+    <jms:activemq-connector name="Active_MQ" username="${connect.i3klen001.activemq.user}" password="${connect.i3klen001.activemq.password}" brokerURL="${connect.i3klen001.activemq.url}" validateConnections="true" numberOfConsumers="${connect.i3klen001.activemq.consumers}" doc:name="Active MQ"/>
+    <connectlogger:config name="Connectlogger__Configuration" loggerName="connect-i3klen001-logger" doc:name="Connectlogger: Configuration"/>
+    
+    <flow name="main-i3klen001-Flow">
+        
+       
+       
+         <jms:inbound-endpoint   doc:name="topic-message-inbound-i3klen001" queue="${connect.i3klen001.jms.virtual.topic.consumer}" connector-ref="activeMQGlblConn">
+            <jms:transaction action="ALWAYS_BEGIN"/>
+
+				 <jms:selector expression="${connect.i3klen001.jms.topic.messageSelectorKey}" /> 
+        	</jms:inbound-endpoint>
+
+        <connectlogger:info config-ref="Connectlogger__Configuration" logMessage=":: Received message for i3klen001 ::" processState="102101100" doc:name="Connectlogger"/>
+        <message-filter throwOnUnaccepted="true" doc:name="validate enterprise Message">
+            <expression-filter expression="#[payload instanceof com.redn.connect.vo.ConnectEnterpriseMessage]"/>
+        </message-filter>
+        <connectlogger:info config-ref="Connectlogger__Configuration" logMessage=":: i3klen001 message processing started :: " processState="102101101" doc:name="Connectlogger"/>
+
+        <flow-ref name="subCaptureEnterpriseDetailsFlow" doc:name="subCaptureEnterpriseDetailsFlow"/>
+        <enricher doc:name="Message Enricher" target="#[flowVars.logCEM]">
+            <connectlogger:info config-ref="Connectlogger__Configuration" logMessage="#[ConnectUtils.jaxbCEMObjectToXML(payload)]" processState="102101960" doc:name="Connectlogger-Log CEM"/>
+
+        </enricher>
+      
+       <component doc:name="extractPayload" doc:description="extractPayload">
+            <spring-object bean="springExtractPayloadProcessorBean"/>
+        </component>
+
+        
+        
+        <flow-ref name="transformMessageFlow" doc:name="transformMessageFlow" doc:description="transforms the message from EDIFACT to output IDOC format"/>
+
+        <exception-strategy ref="globalChoiceExceptionStrategy" doc:name="Reference Exception Strategy"/>
+        
+    </flow>
+
+    
+    <sub-flow name="subCaptureEnterpriseDetailsFlow"  doc:description="this flow captures enterprise message details">
+        <set-session-variable variableName="#[IConstants.ENTERPRISE_MESSAGE]" value="#[payload]" doc:name="store enterprise as Session Variable"/>
+        <expression-component doc:name="captureMessageProperties" doc:description="captures message properties "><![CDATA[payload.getEnterpriseHeader().setComponent("i3klen001");
+flowVars[IConstants.ENTERPRISE_MESSAGE]= payload; 
+flowVars[IConstants.VAR_MESSAGE_ID] = payload.getEnterpriseHeader().getMessageId();
+flowVars[IConstants.VAR_MESSAGE_SOURCE]  = payload.getEnterpriseHeader().getMessageSource();
+flowVars[IConstants.VAR_MESSAGE_ACTION] = payload.getEnterpriseHeader().getAction();
+flowVars[IConstants.VAR_SERVICE_NAME]= payload.getEnterpriseHeader().getServiceName();
+flowVars[IConstants.VAR_TARGET_SYSTEM]= payload.getEnterpriseHeader().getTargetSystem();
+]]></expression-component>
+    </sub-flow>
+    
+	<sub-flow name="transformMessageFlow"  doc:description="this flow transforms EDIFACT message to IDoc file according to mapping specification">
+
+
+         <edifact-edi:read config-ref="EDIFACT_EDI" doc:name="EDIFACT EDI"/>
+        <component doc:name="Java-UpdatingCEMWithRefNumAndPartnerID">
+            <spring-object bean="springExtractORDERSMsgTypeInterfacePropertiesBean"/>
+
+        </component>
+        <connectlogger:info config-ref="Connectlogger__Configuration" logMessage="#[flowVars.partnerID]" processState="102101980" doc:name="Connectlogger-Log PartnerID"/>
+        <connectlogger:info config-ref="Connectlogger__Configuration" logMessage="#[flowVars.referenceNumber]" processState="102101990" doc:name="Connectlogger-Log RefNum"/>
+        <component class="com.redn.connect.i3klen001.processor.EdifactToIDocProcessor" doc:name="EdifactToIDoc"/>
+
+        <foreach doc:name="For Each">
+            <mulexml:jaxb-object-to-xml-transformer jaxbContext-ref="ZORDER_LEN_IDoc_Context" doc:name="JAXB Object to XML"/>
+            <connectlogger:info config-ref="Connectlogger__Configuration" logMessage=" :: xml response after processing in i3klen001 :: #[payload]" processState="102101110" doc:name="Connectlogger"/>
+            <flow-ref name="createCEMAndSendToConnect2SAP" doc:name="createCEMAndSendToConnect2SAP"/>
+        </foreach>
+
+        
+    </sub-flow>
+    
+    <sub-flow name="createCEMAndSendToConnect2SAP"  doc:description="this flow creates CEM and sends to Connect2SAP topic">
+        <component doc:name="Java-UpdateCEM">
+            <spring-object bean="springUpdateCEMWithIDOCBean"/>
+        </component>
+
+        <jms:outbound-endpoint queue="${connect.i3klen001.jms.queue} " connector-ref="Active_MQ" doc:name="SendToConnect2SAPQueue">
+            <jms:transaction action="NONE"/>
+        </jms:outbound-endpoint>
+        <connectlogger:info config-ref="Connectlogger__Configuration" logMessage=":: i3klen001 message processing successfully completed  and sent to Connect2SAP Queue ::" processState=" 102101130" doc:name="Connectlogger"/>
+		
+	</sub-flow>
+</mule>

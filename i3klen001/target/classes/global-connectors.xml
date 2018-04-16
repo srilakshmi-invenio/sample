@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd">
+
+	<jms:activemq-connector name="activeMQGlblConn" 
+    	username="${connect.i3klen001.activemq.user}" 
+    	password="${connect.i3klen001.activemq.password}" 
+    	brokerURL="${connect.i3klen001.activemq.url}" 
+    	validateConnections="true" 
+    	doc:name="Active MQ Global Connector" 
+    	numberOfConsumers="${connect.i3klen001.activemq.consumers}" persistentDelivery="true" specification="1.1">
+        <reconnect-forever frequency="${connect.i3klen001.activemq.reconnect.frequency}"  blocking="false"/>
+        <service-overrides sessionHandler="org.mule.session.NullSessionHandler"/>
+    </jms:activemq-connector>
+ 
+</mule>

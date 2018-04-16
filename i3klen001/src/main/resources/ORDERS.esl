@@ -1,0 +1,472 @@
+form: EDIFACT
+version: 'd97a'
+imports: [ '/edifact/d97a/basedefs.esl' ]
+id: 'ORDERS'
+name: 'Purchase order message'
+heading: 
+- { idRef: 'BGM', position: '0020', usage: M }
+- { idRef: 'DTM', position: '0030', usage: M, count: 35 }
+- { idRef: 'PAI', position: '0040', usage: C }
+- { idRef: 'ALI', position: '0050', usage: C, count: 5 }
+- { idRef: 'IMD', position: '0060', usage: C, count: 999 }
+- { idRef: 'FTX', position: '0070', usage: C, count: 99 }
+- groupId: 'Segment group 1'
+  count: 9999
+  usage: C
+  position: '0080'
+  items: 
+  - { idRef: 'RFF', position: '0090', usage: M }
+  - { idRef: 'DTM', position: '0100', usage: C, count: 5 }
+- groupId: 'Segment group 2'
+  count: 99
+  usage: C
+  position: '0110'
+  items: 
+  - { idRef: 'NAD', position: '0120', usage: M }
+  - { idRef: 'LOC', position: '0130', usage: C, count: 25 }
+  - { idRef: 'FII', position: '0140', usage: C, count: 5 }
+  - groupId: 'Segment group 3'
+    count: 99
+    usage: C
+    position: '0150'
+    items: 
+    - { idRef: 'RFF', position: '0160', usage: M }
+    - { idRef: 'DTM', position: '0170', usage: C, count: 5 }
+  - groupId: 'Segment group 4'
+    count: 5
+    usage: C
+    position: '0180'
+    items: 
+    - { idRef: 'DOC', position: '0190', usage: M }
+    - { idRef: 'DTM', position: '0200', usage: C, count: 5 }
+  - groupId: 'Segment group 5'
+    count: 5
+    usage: C
+    position: '0210'
+    items: 
+    - { idRef: 'CTA', position: '0220', usage: M }
+    - { idRef: 'COM', position: '0230', usage: C, count: 5 }
+- groupId: 'Segment group 6'
+  count: 5
+  usage: C
+  position: '0240'
+  items: 
+  - { idRef: 'TAX', position: '0250', usage: M }
+  - { idRef: 'MOA', position: '0260', usage: C }
+  - { idRef: 'LOC', position: '0270', usage: C, count: 5 }
+- groupId: 'Segment group 7'
+  count: 5
+  usage: C
+  position: '0280'
+  items: 
+  - { idRef: 'CUX', position: '0290', usage: M }
+  - { idRef: 'PCD', position: '0300', usage: C, count: 5 }
+  - { idRef: 'DTM', position: '0310', usage: C, count: 5 }
+- groupId: 'Segment group 8'
+  count: 10
+  usage: C
+  position: '0320'
+  items: 
+  - { idRef: 'PAT', position: '0330', usage: M }
+  - { idRef: 'DTM', position: '0340', usage: C, count: 5 }
+  - { idRef: 'PCD', position: '0350', usage: C }
+  - groupId: 'Segment group 9'
+    count: 9999
+    usage: C
+    position: '0360'
+    items: 
+    - { idRef: 'MOA', position: '0370', usage: M }
+    - { idRef: 'GIR', position: '0380', usage: C, count: 9 }
+- groupId: 'Segment group 10'
+  count: 10
+  usage: C
+  position: '0390'
+  items: 
+  - { idRef: 'TDT', position: '0400', usage: M }
+  - groupId: 'Segment group 11'
+    count: 10
+    usage: C
+    position: '0410'
+    items: 
+    - { idRef: 'LOC', position: '0420', usage: M }
+    - { idRef: 'DTM', position: '0430', usage: C, count: 5 }
+- groupId: 'Segment group 12'
+  count: 5
+  usage: C
+  position: '0440'
+  items: 
+  - { idRef: 'TOD', position: '0450', usage: M }
+  - { idRef: 'LOC', position: '0460', usage: C, count: 2 }
+- groupId: 'Segment group 13'
+  count: 10
+  usage: C
+  position: '0470'
+  items: 
+  - { idRef: 'PAC', position: '0480', usage: M }
+  - { idRef: 'MEA', position: '0490', usage: C, count: 5 }
+  - groupId: 'Segment group 14'
+    count: 5
+    usage: C
+    position: '0500'
+    items: 
+    - { idRef: 'PCI', position: '0510', usage: M }
+    - { idRef: 'RFF', position: '0520', usage: C }
+    - { idRef: 'DTM', position: '0530', usage: C, count: 5 }
+    - { idRef: 'GIN', position: '0540', usage: C, count: 10 }
+- groupId: 'Segment group 15'
+  count: 10
+  usage: C
+  position: '0550'
+  items: 
+  - { idRef: 'EQD', position: '0560', usage: M }
+  - { idRef: 'HAN', position: '0570', usage: C, count: 5 }
+  - { idRef: 'MEA', position: '0580', usage: C, count: 5 }
+  - { idRef: 'FTX', position: '0590', usage: C, count: 5 }
+- groupId: 'Segment group 16'
+  count: 10
+  usage: C
+  position: '0600'
+  items: 
+  - { idRef: 'SCC', position: '0610', usage: M }
+  - { idRef: 'FTX', position: '0620', usage: C, count: 5 }
+  - { idRef: 'RFF', position: '0630', usage: C, count: 5 }
+  - groupId: 'Segment group 17'
+    count: 10
+    usage: C
+    position: '0640'
+    items: 
+    - { idRef: 'QTY', position: '0650', usage: M }
+    - { idRef: 'DTM', position: '0660', usage: C, count: 5 }
+- groupId: 'Segment group 18'
+  count: 25
+  usage: C
+  position: '0670'
+  items: 
+  - { idRef: 'APR', position: '0680', usage: M }
+  - { idRef: 'DTM', position: '0690', usage: C, count: 5 }
+  - { idRef: 'RNG', position: '0700', usage: C }
+- groupId: 'Segment group 19'
+  count: 99
+  usage: C
+  position: '0710'
+  items: 
+  - { idRef: 'ALC', position: '0720', usage: M }
+  - { idRef: 'ALI', position: '0730', usage: C, count: 5 }
+  - { idRef: 'DTM', position: '0740', usage: C, count: 5 }
+  - groupId: 'Segment group 20'
+    usage: C
+    position: '0750'
+    items: 
+    - { idRef: 'QTY', position: '0760', usage: M }
+    - { idRef: 'RNG', position: '0770', usage: C }
+  - groupId: 'Segment group 21'
+    usage: C
+    position: '0780'
+    items: 
+    - { idRef: 'PCD', position: '0790', usage: M }
+    - { idRef: 'RNG', position: '0800', usage: C }
+  - groupId: 'Segment group 22'
+    count: 2
+    usage: C
+    position: '0810'
+    items: 
+    - { idRef: 'MOA', position: '0820', usage: M }
+    - { idRef: 'RNG', position: '0830', usage: C }
+  - groupId: 'Segment group 23'
+    usage: C
+    position: '0840'
+    items: 
+    - { idRef: 'RTE', position: '0850', usage: M }
+    - { idRef: 'RNG', position: '0860', usage: C }
+  - groupId: 'Segment group 24'
+    count: 5
+    usage: C
+    position: '0870'
+    items: 
+    - { idRef: 'TAX', position: '0880', usage: M }
+    - { idRef: 'MOA', position: '0890', usage: C }
+- groupId: 'Segment group 25'
+  count: 999
+  usage: C
+  position: '0900'
+  items: 
+  - { idRef: 'RCS', position: '0910', usage: M }
+  - { idRef: 'RFF', position: '0920', usage: C, count: 5 }
+  - { idRef: 'DTM', position: '0930', usage: C, count: 5 }
+  - { idRef: 'FTX', position: '0940', usage: C, count: 99999 }
+- groupId: 'Segment group 26'
+  count: 999
+  usage: C
+  position: '0950'
+  items: 
+  - { idRef: 'DGS', position: '0960', usage: M }
+  - { idRef: 'FTX', position: '0970', usage: C, count: 5 }
+  - groupId: 'Segment group 27'
+    count: 99
+    usage: C
+    position: '0980'
+    items: 
+    - { idRef: 'CTA', position: '0990', usage: M }
+    - { idRef: 'COM', position: '1000', usage: C, count: 5 }
+detail: 
+- groupId: 'Segment group 28'
+  count: 200000
+  usage: C
+  position: '1010'
+  items: 
+  - { idRef: 'LIN', position: '1020', usage: M }
+  - { idRef: 'PIA', position: '1030', usage: C, count: 25 }
+  - { idRef: 'IMD', position: '1040', usage: C, count: 99 }
+  - { idRef: 'MEA', position: '1050', usage: C, count: 99 }
+  - { idRef: 'QTY', position: '1060', usage: C, count: 99 }
+  - { idRef: 'PCD', position: '1070', usage: C, count: 5 }
+  - { idRef: 'ALI', position: '1080', usage: C, count: 5 }
+  - { idRef: 'DTM', position: '1090', usage: C, count: 35 }
+  - { idRef: 'MOA', position: '1100', usage: C, count: 10 }
+  - { idRef: 'GIN', position: '1110', usage: C, count: 1000 }
+  - { idRef: 'GIR', position: '1120', usage: C, count: 1000 }
+  - { idRef: 'QVR', position: '1130', usage: C }
+  - { idRef: 'DOC', position: '1140', usage: C, count: 99 }
+  - { idRef: 'PAI', position: '1150', usage: C }
+  - { idRef: 'FTX', position: '1160', usage: C, count: 99 }
+  - groupId: 'Segment group 29'
+    count: 999
+    usage: C
+    position: '1170'
+    items: 
+    - { idRef: 'CCI', position: '1180', usage: M }
+    - { idRef: 'CAV', position: '1190', usage: C, count: 10 }
+    - { idRef: 'MEA', position: '1200', usage: C, count: 10 }
+  - groupId: 'Segment group 30'
+    count: 10
+    usage: C
+    position: '1210'
+    items: 
+    - { idRef: 'PAT', position: '1220', usage: M }
+    - { idRef: 'DTM', position: '1230', usage: C, count: 5 }
+    - { idRef: 'PCD', position: '1240', usage: C }
+    - groupId: 'Segment group 31'
+      count: 9999
+      usage: C
+      position: '1250'
+      items: 
+      - { idRef: 'MOA', position: '1260', usage: M }
+      - { idRef: 'GIR', position: '1270', usage: C, count: 9 }
+  - groupId: 'Segment group 32'
+    count: 25
+    usage: C
+    position: '1280'
+    items: 
+    - { idRef: 'PRI', position: '1290', usage: M }
+    - { idRef: 'CUX', position: '1300', usage: C }
+    - { idRef: 'APR', position: '1310', usage: C }
+    - { idRef: 'RNG', position: '1320', usage: C }
+    - { idRef: 'DTM', position: '1330', usage: C, count: 5 }
+  - groupId: 'Segment group 33'
+    count: 9999
+    usage: C
+    position: '1340'
+    items: 
+    - { idRef: 'RFF', position: '1350', usage: M }
+    - { idRef: 'DTM', position: '1360', usage: C, count: 5 }
+  - groupId: 'Segment group 34'
+    count: 10
+    usage: C
+    position: '1370'
+    items: 
+    - { idRef: 'PAC', position: '1380', usage: M }
+    - { idRef: 'MEA', position: '1390', usage: C, count: 5 }
+    - { idRef: 'QTY', position: '1400', usage: C, count: 5 }
+    - { idRef: 'DTM', position: '1410', usage: C, count: 5 }
+    - groupId: 'Segment group 35'
+      usage: C
+      position: '1420'
+      items: 
+      - { idRef: 'RFF', position: '1430', usage: M }
+      - { idRef: 'DTM', position: '1440', usage: C, count: 5 }
+    - groupId: 'Segment group 36'
+      count: 5
+      usage: C
+      position: '1450'
+      items: 
+      - { idRef: 'PCI', position: '1460', usage: M }
+      - { idRef: 'RFF', position: '1470', usage: C }
+      - { idRef: 'DTM', position: '1480', usage: C, count: 5 }
+      - { idRef: 'GIN', position: '1490', usage: C, count: 10 }
+  - groupId: 'Segment group 37'
+    count: 9999
+    usage: C
+    position: '1500'
+    items: 
+    - { idRef: 'LOC', position: '1510', usage: M }
+    - { idRef: 'QTY', position: '1520', usage: C }
+    - { idRef: 'PCD', position: '1530', usage: C }
+    - { idRef: 'DTM', position: '1540', usage: C, count: 5 }
+  - groupId: 'Segment group 38'
+    count: 10
+    usage: C
+    position: '1550'
+    items: 
+    - { idRef: 'TAX', position: '1560', usage: M }
+    - { idRef: 'MOA', position: '1570', usage: C }
+    - { idRef: 'LOC', position: '1580', usage: C, count: 5 }
+  - groupId: 'Segment group 39'
+    count: 999
+    usage: C
+    position: '1590'
+    items: 
+    - { idRef: 'NAD', position: '1600', usage: M }
+    - { idRef: 'LOC', position: '1610', usage: C, count: 5 }
+    - groupId: 'Segment group 40'
+      count: 99
+      usage: C
+      position: '1620'
+      items: 
+      - { idRef: 'RFF', position: '1630', usage: M }
+      - { idRef: 'DTM', position: '1640', usage: C, count: 5 }
+    - groupId: 'Segment group 41'
+      count: 5
+      usage: C
+      position: '1650'
+      items: 
+      - { idRef: 'DOC', position: '1660', usage: M }
+      - { idRef: 'DTM', position: '1670', usage: C, count: 5 }
+    - groupId: 'Segment group 42'
+      count: 5
+      usage: C
+      position: '1680'
+      items: 
+      - { idRef: 'CTA', position: '1690', usage: M }
+      - { idRef: 'COM', position: '1700', usage: C, count: 5 }
+  - groupId: 'Segment group 43'
+    count: 99
+    usage: C
+    position: '1710'
+    items: 
+    - { idRef: 'ALC', position: '1720', usage: M }
+    - { idRef: 'ALI', position: '1730', usage: C, count: 5 }
+    - { idRef: 'DTM', position: '1740', usage: C, count: 5 }
+    - groupId: 'Segment group 44'
+      usage: C
+      position: '1750'
+      items: 
+      - { idRef: 'QTY', position: '1760', usage: M }
+      - { idRef: 'RNG', position: '1770', usage: C }
+    - groupId: 'Segment group 45'
+      usage: C
+      position: '1780'
+      items: 
+      - { idRef: 'PCD', position: '1790', usage: M }
+      - { idRef: 'RNG', position: '1800', usage: C }
+    - groupId: 'Segment group 46'
+      count: 2
+      usage: C
+      position: '1810'
+      items: 
+      - { idRef: 'MOA', position: '1820', usage: M }
+      - { idRef: 'RNG', position: '1830', usage: C }
+    - groupId: 'Segment group 47'
+      usage: C
+      position: '1840'
+      items: 
+      - { idRef: 'RTE', position: '1850', usage: M }
+      - { idRef: 'RNG', position: '1860', usage: C }
+    - groupId: 'Segment group 48'
+      count: 5
+      usage: C
+      position: '1870'
+      items: 
+      - { idRef: 'TAX', position: '1880', usage: M }
+      - { idRef: 'MOA', position: '1890', usage: C }
+  - groupId: 'Segment group 49'
+    count: 10
+    usage: C
+    position: '1900'
+    items: 
+    - { idRef: 'TDT', position: '1910', usage: M }
+    - groupId: 'Segment group 50'
+      count: 10
+      usage: C
+      position: '1920'
+      items: 
+      - { idRef: 'LOC', position: '1930', usage: M }
+      - { idRef: 'DTM', position: '1940', usage: C, count: 5 }
+  - groupId: 'Segment group 51'
+    count: 5
+    usage: C
+    position: '1950'
+    items: 
+    - { idRef: 'TOD', position: '1960', usage: M }
+    - { idRef: 'LOC', position: '1970', usage: C, count: 2 }
+  - groupId: 'Segment group 52'
+    count: 10
+    usage: C
+    position: '1980'
+    items: 
+    - { idRef: 'EQD', position: '1990', usage: M }
+    - { idRef: 'HAN', position: '2000', usage: C, count: 5 }
+    - { idRef: 'MEA', position: '2010', usage: C, count: 5 }
+    - { idRef: 'FTX', position: '2020', usage: C, count: 5 }
+  - groupId: 'Segment group 53'
+    count: 100
+    usage: C
+    position: '2030'
+    items: 
+    - { idRef: 'SCC', position: '2040', usage: M }
+    - { idRef: 'FTX', position: '2050', usage: C, count: 5 }
+    - { idRef: 'RFF', position: '2060', usage: C, count: 5 }
+    - groupId: 'Segment group 54'
+      count: 10
+      usage: C
+      position: '2070'
+      items: 
+      - { idRef: 'QTY', position: '2080', usage: M }
+      - { idRef: 'DTM', position: '2090', usage: C, count: 5 }
+  - groupId: 'Segment group 55'
+    count: 999
+    usage: C
+    position: '2100'
+    items: 
+    - { idRef: 'RCS', position: '2110', usage: M }
+    - { idRef: 'RFF', position: '2120', usage: C, count: 5 }
+    - { idRef: 'DTM', position: '2130', usage: C, count: 5 }
+    - { idRef: 'FTX', position: '2140', usage: C, count: 99999 }
+  - groupId: 'Segment group 56'
+    count: 10
+    usage: C
+    position: '2150'
+    items: 
+    - { idRef: 'STG', position: '2160', usage: M }
+    - groupId: 'Segment group 57'
+      count: 3
+      usage: C
+      position: '2170'
+      items: 
+      - { idRef: 'QTY', position: '2180', usage: M }
+      - { idRef: 'MOA', position: '2190', usage: C }
+  - groupId: 'Segment group 58'
+    count: 999
+    usage: C
+    position: '2200'
+    items: 
+    - { idRef: 'DGS', position: '2210', usage: M }
+    - { idRef: 'FTX', position: '2220', usage: C, count: 5 }
+    - groupId: 'Segment group 59'
+      count: 99
+      usage: C
+      position: '2230'
+      items: 
+      - { idRef: 'CTA', position: '2240', usage: M }
+      - { idRef: 'COM', position: '2250', usage: C, count: 5 }
+summary: 
+- { idRef: 'UNS', position: '2260', usage: M }
+- { idRef: 'MOA', position: '2270', usage: C, count: 12 }
+- { idRef: 'CNT', position: '2280', usage: C, count: 10 }
+- groupId: 'Segment group 60'
+  count: 10
+  usage: C
+  position: '2290'
+  items: 
+  - { idRef: 'ALC', position: '2300', usage: M }
+  - { idRef: 'ALI', position: '2310', usage: C }
+  - { idRef: 'MOA', position: '2320', usage: M, count: 2 }

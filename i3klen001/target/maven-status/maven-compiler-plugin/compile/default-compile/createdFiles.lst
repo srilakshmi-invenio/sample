@@ -1,0 +1,3 @@
+com\redn\connect\i3klen001\constants\IConstants.class
+com\redn\connect\i3klen001\transformer\UpdateCEMWithIDOC.class
+com\redn\connect\i3klen001\processor\EdifactToIDocProcessor.class
